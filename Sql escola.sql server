@@ -1,0 +1,236 @@
+create database escola;
+use escola;
+
+create table tab_alunos(
+	id_aluno int not null primary key identity,
+	nome varchar(50) not null,
+	email varchar(50) not null,
+	fone varchar(15) not null, 
+	foto varchar(50) not null
+);
+
+create table tab_professores(
+	id_professor int not null primary key identity,
+	nome varchar(50) not null,
+	email varchar(50) not null,
+	fone varchar(15) not null, 
+	foto varchar(50) not null,
+	salario decimal(10,2) not null,
+);
+
+create table tab_salas(
+	id_sala int not null primary key identity,
+	numero int not null,
+	capacidade int not null, 
+	equipamento varchar(3) not null
+);
+
+create table tab_turmas(
+	id_turma int not null primary key identity,
+	nome varchar(30) not null,
+	id_aluno int not null,
+	id_professor int not null,
+	id_sala int not null,
+
+	constraint fk_id_aluno 
+	foreign key(id_aluno)
+	references tab_alunos(id_aluno),
+
+	constraint fk_id_professor
+	foreign key(id_professor)
+	references tab_professores(id_professor),
+
+	constraint fk_id_sala
+	foreign key(id_sala)
+	references tab_salas(id_sala)
+);
+
+insert into tab_alunos(nome,email,fone,foto)
+values
+('João da Silva', 'joao@gmail.com', '(11) 91111-1111', 'joao.jpg'),
+('Maria Machadão', 'mmachadão@outlook.com', '(11) 92222-2222', 'maria.jpg'),
+('Chales', 'charles@uol.com', '(11) 93333-3333', 'charles.jpg'),
+('Manoel', 'manoel@gmail.com', '(11) 94444-4444', 'manoel.jpg'),
+('Danilo', 'danilo@bol.com.br', '(11) 95555-5555', 'danilo.jpg'),
+('Fatima', 'fatima@gmail.com', '(11) 96666-6666', 'fatima.jpg'),
+('Simone', 'simone@outlook.com', '(11) 97777-7777', 'simone.jpg'),
+('Tomas', 'tomas@hmail.com', '(11) 98888-8888', 'tomas.jpg'),
+('Tereza', 'tereza@uol.com.br', '(11) 99999-9999', 'tereza.jpg'),
+('Beto', 'beto@gmail.com', '(11) 91010-1010', 'beto.jpg');
+
+insert into tab_professores(nome,email,fone,foto,salario)
+values
+('Fabio', 'fabioc@sp.senac.br', '(11) 91234-5678', 'fabio.jpg', 1500.00),
+('Rafael', 'rafael@sp.senac.br', '(11) 99876-5432', 'alex.jog', 2500.00),
+('Alexandre', 'alex@sp.senac.br', '(11) 99632-5874', 'alex.jpg', 2500.00),
+('Anesio', 'anesio@sp.senac.br', '(11) 97412-3658', 'anesio.jpg', 2380.00);
+
+insert into tab_salas(numero, capacidade, equipamento)
+values
+(2, 12, 'WIN'),
+(24, 27, 'WIN'),
+(30, 20, 'WIN'),
+(32, 20, 'MAC');
+
+select* from tab_alunos;
+select* from tab_professores;
+select* from tab_salas;
+
+insert into tab_turmas(nome, id_aluno, id_professor, id_sala)
+values
+('SQL', 1, 1, 1),
+('SQL', 2, 1, 1),
+('SQL', 3, 1, 1),
+
+('C#', 4, 2, 2),
+('C#', 5, 2, 2),
+('C#', 6, 2, 2),
+
+('Redes', 7, 3, 3),
+('Redes', 8, 3, 3),
+
+('Exel', 9, 4,  4),
+('Exel', 10, 4, 4);
+
+-- Mostrar o nome dos alunos e telefones
+
+select * from tab_alunos;
+
+-----------------------------------------------------------------------------------------
+
+-- Mostrar o nome dos alunos e email do gmail
+
+select nome, email from tab_alunos
+where email like '%@gmail.com';
+
+-- Like não é igual, e sim algo parecido
+-- Like é so pra texto
+-- o simbolo de % significa qualquer coisa e apos ele vem a continuação
+
+-----------------------------------------------------------------------------------------
+-- Mostrar o nome dos professores e o salario
+
+select nome, salario from tab_professores;
+
+-----------------------------------------------------------------------------------------
+
+-- Mostrar o nome dos professores e salarios maiores que 2400
+
+select nome, salario from tab_professores
+where salario > 2400;
+
+-- Simbolo de > serve para falar se algo é maior ou se vc quer algo acima de um valor
+
+-----------------------------------------------------------------------------------------
+
+-- Mostrar o nome dos professores e salarios entre 1200 e 2400
+
+select nome, salario from tab_professores
+where (salario > 1200) and (salario < 2500);
+
+-- Existem 2 formas de fazer, com simbolo e com BETWEEN
+
+select nome, salario from tab_professores
+where salario between 1200 and 2400;
+
+-- O BETWEEN serve para coisas maiores porque ele faz o calculo mais rapido
+
+-----------------------------------------------------------------------------------------
+
+-- Mostrar o numero de salas e capacidade onde houver equipamento MAC
+
+select numero, capacidade from tab_salas
+where equipamento = 'MAC';
+
+-----------------------------------------------------------------------------------------
+
+-- Mostrar o numero de sala e capacidade onde não houver equipamento MAC
+-- Faça a consulta de duas formas diferentes 
+-- O do not foi pensando por mim mesmo
+
+select numero, capacidade, equipamento from tab_salas
+where not equipamento = 'MAC';
+
+select numero, capacidade, equipamento from tab_salas
+where equipamento = 'WIN';
+
+select numero, capacidade, equipamento from tab_salas
+where equipamento <> 'MAC';
+
+-----------------------------------------------------------------------------------------
+
+-- Mostrar os ids e os nomes dos alunos que estão na turma de sql
+-- Use rotulos para todas as colunas
+
+select tab_alunos.id_aluno, tab_alunos.nome, tab_turmas.nome from tab_alunos
+inner join tab_turmas
+on tab_alunos.id_aluno = 
+tab_turmas.id_aluno
+where tab_turmas.nome like'sql';
+
+select tab_alunos.id_aluno as 'Codigo do Aluno',
+	tab_alunos.nome as 'Aluno',
+	tab_turmas.nome as 'Turma'
+from tab_alunos
+inner join tab_turmas
+on tab_alunos.id_aluno = tab_turmas.id_aluno
+where tab_turmas.nome = 'sql'
+
+-----------------------------------------------------------------------------------------
+
+-- Mostrar o nome do professor e dos alunos da turma de redes
+-- Use rotulos para todas as colunas
+
+--select tab_turmas.nome as 'Turma',
+--tab_alunos.nome as 'Nome alunos',
+--tab_professores.nome as 'Nome professores'
+--from tab_turmas
+--inner join tab_professores
+--on tab_professores.nome = tab_turmas.id_professor
+--inner join tab_alunos
+--on tab_alunos.nome = tab_turmas.id_aluno
+--where tab_turmas.nome = 'redes'
+	--	^
+--teste	|
+--------
+
+select tab_professores.nome as 'Professor',
+	tab_alunos.nome as 'Aluno',
+	tab_turmas.nome as 'Turma'
+from tab_turmas
+inner join tab_professores
+on tab_turmas.id_professor = tab_professores.id_professor
+inner join tab_alunos
+on tab_turmas.id_aluno = tab_alunos.id_aluno
+where tab_turmas.nome = 'Redes';
+
+-----------------------------------------------------------------------------------------
+
+-- Mostrar os nomes dos alunos que estão na turma de SQL e C#
+-- Use rotulos para todas as colunas
+
+select tab_alunos.nome as 'Alunos',
+	tab_turmas.nome as 'Turma'
+from tab_turmas
+inner join tab_alunos
+on tab_turmas.id_aluno = tab_alunos.id_aluno
+where tab_turmas.nome = 'sql' or tab_turmas.nome = 'c#';
+
+select* from tab_turmas
+
+-----------------------------------------------------------------------------------------
+
+-- Mostrar os nomes dos alunos que estão com o professor Fabio e  nome do curso
+-- Use rotulos para todas as colunas
+
+select tab_alunos.nome as 'Alunos',
+	tab_professores.nome as 'Professores',
+	tab_turmas.nome as 'Curso'
+from tab_turmas
+inner join tab_alunos
+on tab_alunos.id_aluno = tab_turmas.id_aluno
+inner join tab_professores
+on tab_professores.id_professor = tab_turmas.id_professor
+where tab_professores.nome = 'Fabio'
+
+-----------------------------------------------------------------------------------------FIM

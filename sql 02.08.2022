@@ -1,0 +1,181 @@
+use fluxocaixa;
+
+-- Vamos criar uma trigger para atualizar a tabela
+-- caixa a cada venda feita
+
+create trigger tgr_VendaInserida
+on tab_vendas
+for insert
+as begin
+	declare
+	@var_valor decimal(10,2),
+	@var_data date
+	select @var_data = data, @var_valor = valor from inserted
+	update tab_caixa set saldo_final = saldo_final + @var_valor
+	where data = @var_data
+
+end;
+
+-- select nas tabelas
+
+select * from tab_caixa;
+select * from tab_vendas;
+
+-- Vamos inserir uma venda
+
+insert into tab_vendas(data, valor)
+values
+('2022-08-02', 50);
+
+
+-- Vamos criar uma trigger para atualizar a tabela 
+-- caixa a cada venda excluida
+
+
+create trigger tgr_VendaExcluida
+on tab_vendas
+for delete 
+as begin
+	declare
+	@var_valor decimal(10,2),
+	@var_data date
+	select @var_data = data, @var_valor = valor from deleted
+	update tab_caixa set saldo_final = saldo_final - @var_valor
+	where data = @var_data
+end;
+
+-- Vamos excluir uma venda
+
+delete from tab_vendas where id_venda = 3;
+
+drop trigger tgr_VendaExcluida;
+
+-- Para vizualizar as triggers do sistema
+
+select * from sys.triggers;
+
+----------------------------------------------------------------------
+
+-- Funções internas
+-- datediff
+-- Diferença entre datas
+
+select datediff(day,'2022-01-01', '2022-05-05') as 'Dia(s)';
+select datediff(Month,'2022-01-01', '2022-05-05') as 'Mês(es)';
+select datediff(Year,'2020-01-01', '2022-05-05') as 'Ano(s)';
+
+-- Mostra a data do sistema
+
+select GETDATE();
+
+-- Extração de parte da data
+
+select datepart(day, '2020-02-12') as 'Dia';
+select datepart(month, '2020-02-12') as 'Mês';
+select datepart(year, '2020-02-12') as 'Ano';
+
+-- Adicionar um periodo a uma data
+
+select dateadd(day, 1, '20220508');
+select dateadd(Month, 1, '20220508');
+select dateadd(Year, 1, '20220508');
+
+
+-- Retorna parte de uma string
+
+select SUBSTRING('Banana', 2, 3);
+
+
+-- Retorna o tamanho de uma string
+
+select len('Paralelepipedo');
+
+
+-- Faz a contagem de uma coluna
+
+use escola;
+select count (nome) as 'Quantidade de Alunos'
+from tab_alunos where email like '@gmail';
+
+select * from tab_alunos;
+
+-- Retorna o valor medio de uma coluna
+select avg(salario) as 'Media dos salarios'	
+from tab_professores;
+
+
+-- Retorna o maior valor de uma coluna
+
+select max(salario) as 'Maior salario'
+from tab_professores;
+
+select * from tab_professores;
+
+-- Retorna o menor valor de uma coluna
+
+select min(salario) as 'Menor salario'
+from tab_professores;
+
+-- Retorna a soma de uma coluna
+
+select sum(salario) as 'Total de salarios'
+from tab_professores;
+
+
+-- Converte uma string para minuscula
+
+select lower(nome) from tab_alunos;
+
+-- Converte uma string para maiuscula
+
+select upper(nome) from tab_alunos;
+
+-- Remove espaços em branco à esquerda de uma string
+
+declare @nome varchar(20)
+set  @nome = ' Fabio '
+select ltrim(@nome);
+
+declare @nome2 varchar(20)
+set  @nome2 = ' Fabio '
+select rtrim(@nome2);
+
+
+-------------------------------------------------------------------
+
+-- Funções personalizadas
+-- Remove espaços de uma string
+
+create function TiraEspaço(@texto varchar(50))
+returns varchar(50)
+as
+begin
+	return(ltrim(rtrim(@texto)))
+end;
+
+-- Chamando a função
+
+select dbo.TiraEspaço(' Senac Vila Prudente ');
+
+-- Para remover uma function
+
+drop function TiraEspaço;
+
+
+
+-- Função para fazer uma subtração
+
+create function Subtracao(
+	@num1 as int,
+	@num2 as int)
+Returns int 
+as 
+begin
+	declare @calc as int
+	set @calc = @num1 - @num2
+	return @calc
+end;
+
+-- Chamando função
+
+select dbo.Subtracao(50,10);

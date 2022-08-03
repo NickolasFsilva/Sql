@@ -1,0 +1,46 @@
+-- Mostrar qtde de vendas de cada vendedor
+ select id_vendedor, count(valor) as 'Quantidade de vendas'
+ from tab_vendas
+ group by id_vendedor;
+
+-- Mostrar qtde de vendas de cada vendedor e seu nome (sem inner join)
+ select tab_vendas.id_vendedor,
+ tab_vendedores.nome,
+ count(tab_vendas.valor) as 'Quantidade de vendas'
+ FROM tab_vendas, tab_vendedores
+ where tab_vendas.id_vendedor = tab_vendedores.id_vendedor
+ group by tab_vendas.id_vendedor, tab_vendedores.nome;
+
+-- Mostras total vendido por vendedor
+
+select id_vendedor, sum(valor) as Total
+from tab_vendas
+group by id_vendedor;
+
+
+-- Mostrar o total vendido por vendedor e seu nome (sem inner join)
+
+select tab_vendedores.nome, sum(valor) as Total
+from tab_vendas, tab_vendedores
+where tab_vendedores.id_vendedor = tab_vendas.id_vendedor
+group by tab_vendedores.id_vendedor;
+
+
+-- Usando o Having
+
+-- Determina uma condição de busca para um grupo ou um conjunto
+-- de registros, definindo criterios para limitar os resultados
+-- obtidos a partir do agrupamento de registros.
+-- so pode ser usado em parceria com GROUP BY
+
+-- Mostrar o total vendido por vendedor maior ou igual a 1000
+-- e seu nome (sem inner join)
+
+select tab_vendas.id_vendedor as 'Codigo',
+		tab_vendedores.nome as Vendedor,
+        sum(tab_vendas.valor) as total
+From tab_vendas, tab_vendedores
+where tab_vendas.id_vendedor = tab_vendedores.id_vendedor
+group by tab_vendas.id_vendedor, tab_vendedores.nome
+Having sum(tab_vendas.valor) >= (valor que você escolher Ex: 1000);
+

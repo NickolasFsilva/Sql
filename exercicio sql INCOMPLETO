@@ -25,6 +25,10 @@ create table tab_rio(
 	comprimento float not null
 );
 
+----------------------------------------------------------------------------------------
+Crie as tabelas que vc quiser com insert into 
+----------------------------------------------------------------------------------------
+
 -- Listar todas as cidades que são capitais
 use mundo;
 select nome, capital
@@ -46,4 +50,47 @@ select pib
 from tab_pais
 where pib >= 10000
 
--- Incompleto
+-- Qual é o nome e a população da capital do país onde
+-- o rio St Lawrence tem sua 
+-- nascente?
+
+use mundo;
+select pais, populacao
+from tab_cidade
+where nome = 'Washington';
+
+--  Qual é a média da população das cidades que não são capitais?
+
+use mundo;
+select avg (populacao) 
+from tab_cidade
+where capital = 'N';
+
+
+-- Para cada continente retorne o pib médio de seu país
+use mundo;
+select avg (pib), continente
+from tab_pais
+group by continente;
+
+-- Para cada país onde pelo menos 2 rios têm nascentes,
+-- encontre o comprimento do 
+-- menor rio
+
+use mundo;
+select pais, min (comrpimento)
+from tab_rio
+where nascente = 'USA';
+
+-- Liste os países cujo pib é maior que o pib do Canadá
+
+use mundo;
+select nome
+from tab_pais
+where pib > 658;
+
+-- Versão alternativa da lista de paises com pib maior que o Canadá
+
+SELECT nome AS 'paises com o PIB maior do PIB do Canada '
+FROM tab_pais 
+WHERE pib > (SELECT pib FROM tab_pais WHERE nome ='Canada');

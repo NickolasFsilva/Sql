@@ -4,16 +4,16 @@ create table tab_pais(
 	id_pais int not null primary key auto_increment,
 	nome varchar(50) not null,
 	continente varchar(3) not null,
-	expectativa int not null,
-	pib int not null,
-	populacao int not null,
+	expectativa float not null,
+	pib float not null,
+	populacao float not null,
 );
 
 create table tab_cidade(
 	id_cidade int not null primary key auto_increment,
 	nome varchar(50) not null,
 	pais varchar(20) not null,
-	populacao int not null,
+	populacao float not null,
 	capital varchar(3)
 );
 
@@ -22,7 +22,7 @@ create table tab_rio(
 	nome varchar(50) not null,
 	pais varchar(20) not null,
 	nascente varchar(3) not null,
-	comprimento int not null
+	comprimento float not null
 );
 
 -- Listar todas as cidades que são capitais
